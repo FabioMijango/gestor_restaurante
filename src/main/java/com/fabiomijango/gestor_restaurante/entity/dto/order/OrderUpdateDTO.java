@@ -11,11 +11,11 @@ import java.util.List;
 
 @Getter
 public class OrderUpdateDTO {
-    @NotNull
-    @ValidUUID
+    @NotNull(message = "Order ID is mandatory")
+    @ValidUUID(message = "Order ID must be a valid UUID")
     private String orderId;
 
-    @ValidOrderState
+    @ValidOrderState(message = "Order state is not valid")
     private String orderState;
 
     private List<DishDTO> dishes;

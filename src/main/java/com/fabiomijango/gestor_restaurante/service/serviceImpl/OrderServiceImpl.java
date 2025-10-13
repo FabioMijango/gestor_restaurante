@@ -120,7 +120,38 @@ public class OrderServiceImpl implements iOrderService {
     }
 
     @Override
+    @Transactional
     public void update(OrderUpdateDTO entity) {
+        UUID orderId = UUID.fromString(entity.getOrderId());
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new EntityNotFoundException("Order not found")
+        );
+        if(entity.getOrderState() != null){
+            OrderState orderState = orderStateRepository.findByState(entity.getOrderState()).orElseThrow(
+                    () -> new EntityNotFoundException("Order state not found or not valid")
+            );
+            order.setState(orderState);
+        }
+        if(entity.getDishes() != null) {
+            List<OrderDish> newDishes = entity.getDishes().stream()
+                .map( dishDTO -> {
+                    UUID uuid = UUID.fromString(dishDTO.getDishId());
+                    Dish dish = dishService.getDishById(uuid).orElseThrow(
+                            () -> new EntityNotFoundException("Dish not found")
+                    );
+
+                    OrderDish orderDish = new OrderDish();
+                    orderDish.setDish(dish);
+                    orderDish.setQuantity(dishDTO.getQuantity());
+                    orderDish.setOrder(order);
+                    orderDish.setMetadata(new Metadata());
+
+                    return orderDish;
+                }).toList();
+
+            order.setOrderDishes(newDishes);
+        }
+
 
     }
 

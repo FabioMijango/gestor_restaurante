@@ -31,18 +31,19 @@ public class OrderDishServiceImpl implements iOrderDishService {
 
     @Override
     public void save(OrderDishSaveDTO entity) {
-
+        // Not needed?
+        throw  new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void update(OrderDishUpdateDTO entity) {
-
+        // Not needed?
+        throw  new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void deleteById(UUID uuid) {
         orderDishRepository.deleteById(uuid);
-
     }
 
     @Override

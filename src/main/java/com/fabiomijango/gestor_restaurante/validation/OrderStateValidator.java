@@ -15,8 +15,10 @@ public class OrderStateValidator implements ConstraintValidator<ValidOrderState,
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (value == null || value.isBlank()) {
+            return true;
+        }
         List<String> orderStates = orderService.findAllOrderStates().stream().map(OrderState::getState).toList();
-
         return orderStates.contains(value);
     }
 }

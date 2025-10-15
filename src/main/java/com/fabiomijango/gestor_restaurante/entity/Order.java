@@ -2,8 +2,10 @@ package com.fabiomijango.gestor_restaurante.entity;
 
 import com.fabiomijango.gestor_restaurante.entity.data.Metadata;
 import com.fabiomijango.gestor_restaurante.entity.data.OrderState;
+import com.fabiomijango.gestor_restaurante.entity.dto.order.OrderGetDTO;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Digits;
 import lombok.Data;
 
 import java.util.List;
@@ -17,10 +19,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Tables table;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne( fetch = FetchType.EAGER)
     private User waiter;
 
     private Double totalPrice;
@@ -34,4 +36,22 @@ public class Order {
 
     @Embedded
     private Metadata metadata;
+
+    public OrderGetDTO mapToGetDTO() {
+        return OrderGetDTO.builder()
+                .id(this.getId())
+                .stateName(this.getState().getState())
+                .waiterEmail(this.getWaiter().getEmail())
+                .tableId(this.getTable().getId())
+                .totalPrice(this.getTotalPrice())
+                .orderDishes(
+                        this.getOrderDishes().stream().map( orderDish -> {
+                                    return OrderGetDTO.OrderDishDTO.builder()
+                                            .id(orderDish.getDish().getId())
+                                            .quantity(orderDish.getQuantity())
+                                            .build();
+                                }
+                        ).toList()
+                ).build();
+    }
 }

@@ -2,6 +2,7 @@ package com.fabiomijango.gestor_restaurante.entity;
 
 import com.fabiomijango.gestor_restaurante.entity.data.DishCategory;
 import com.fabiomijango.gestor_restaurante.entity.data.Metadata;
+import com.fabiomijango.gestor_restaurante.entity.dto.dish.DishGetDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -34,4 +35,15 @@ public class Dish {
 
     @Embedded
     private Metadata metadata;
+
+    public DishGetDTO mapToDTO(){
+        return DishGetDTO.builder()
+                .id(this.id.toString())
+                .description(this.description)
+                .name(this.name)
+                .category(this.category.getCategory())
+                .isAvailable(this.isAvailable)
+                .price(this.price)
+                .build();
+    }
 }

@@ -2,6 +2,7 @@ package com.fabiomijango.gestor_restaurante.entity;
 
 import com.fabiomijango.gestor_restaurante.entity.data.Metadata;
 import com.fabiomijango.gestor_restaurante.entity.data.TableState;
+import com.fabiomijango.gestor_restaurante.entity.dto.tables.TableGetDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,4 +25,12 @@ public class Tables {
 
     @Embedded
     private Metadata metadata;
+
+    public TableGetDTO mapToDTO() {
+        return TableGetDTO.builder()
+                .id(this.id.toString())
+                .number(this.tableNumber)
+                .status(this.state.getState())
+                .build();
+    }
 }

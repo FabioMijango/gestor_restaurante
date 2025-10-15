@@ -44,7 +44,7 @@ public class DishServiceImpl implements iDishService {
 
         Dish dish = new Dish();
         dish.setName(entity.getName());
-        dish.setDescription(entity.getDescription());
+        dish.setDescription(entity.getDescription() == null ? "" : entity.getDescription());
         dish.setPrice(entity.getPrice());
         dish.setCategory(dishCategory);
         dish.setIsAvailable(true);

@@ -3,10 +3,9 @@ package com.fabiomijango.gestor_restaurante.service.serviceImpl;
 import com.fabiomijango.gestor_restaurante.entity.*;
 import com.fabiomijango.gestor_restaurante.entity.data.Metadata;
 import com.fabiomijango.gestor_restaurante.entity.data.OrderState;
-import com.fabiomijango.gestor_restaurante.entity.data.TableState;
 import com.fabiomijango.gestor_restaurante.entity.dto.order.OrderSaveDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.order.OrderUpdateDTO;
-import com.fabiomijango.gestor_restaurante.entity.dto.orderdish.OrderDishSaveDTO;
+import com.fabiomijango.gestor_restaurante.entity.dto.orderdish.DishDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.tables.TableUpdateDTO;
 import com.fabiomijango.gestor_restaurante.exception.EntityException.EntityNotValidException;
 import com.fabiomijango.gestor_restaurante.repository.dataRepository.iOrderStateRepository;
@@ -17,7 +16,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements iOrderService {
@@ -78,22 +79,7 @@ public class OrderServiceImpl implements iOrderService {
         order.setWaiter(waiter);
         order.setState(orderState);
         order.setOrderDishes(
-                entity.getDishes().stream().map(
-                        dishDTO -> {
-                            UUID uuid = UUID.fromString(dishDTO.getDishId());
-                            Dish dish = dishService.getDishById(uuid).orElseThrow(
-                                    () -> new EntityNotFoundException("Dish not found")
-                            );
-
-                            OrderDish orderDish = new OrderDish();
-                            orderDish.setDish(dish);
-                            orderDish.setQuantity(dishDTO.getQuantity());
-                            orderDish.setOrder(order);
-                            orderDish.setMetadata(new Metadata());
-
-                            return orderDish;
-                        }
-                ).toList()
+                mapToOrderDishes(entity.getDishes(), order)
         );
 
         for(OrderDish orderDish : order.getOrderDishes()) {
@@ -119,26 +105,15 @@ public class OrderServiceImpl implements iOrderService {
             order.setState(orderState);
         }
         if(entity.getDishes() != null) {
-            List<OrderDish> newDishes = entity.getDishes().stream()
-                .map( dishDTO -> {
-                    UUID uuid = UUID.fromString(dishDTO.getDishId());
-                    Dish dish = dishService.getDishById(uuid).orElseThrow(
-                            () -> new EntityNotFoundException("Dish not found")
-                    );
-
-                    OrderDish orderDish = new OrderDish();
-                    orderDish.setDish(dish);
-                    orderDish.setQuantity(dishDTO.getQuantity());
-                    orderDish.setOrder(order);
-                    orderDish.setMetadata(new Metadata());
-
-                    return orderDish;
-                }).toList();
-
-            order.setOrderDishes(newDishes);
+            List<OrderDish> newDishes = mapToOrderDishes(entity.getDishes(), order);
+            orderDishService.save(newDishes);
         }
 
+        Metadata md = order.getMetadata();
+        md.updateMetadata("system"); // TODO: Get user
+        order.setMetadata(md);
 
+        orderRepository.save(order);
     }
 
     @Override
@@ -156,4 +131,20 @@ public class OrderServiceImpl implements iOrderService {
         return orderRepository.findAll();
     }
 
+    private List<OrderDish> mapToOrderDishes(List<DishDTO> dishes, Order order) {
+        return dishes.stream().map(dishDTO -> {
+            UUID uuid = UUID.fromString(dishDTO.getDishId());
+            Dish dish = dishService.getDishById(uuid).orElseThrow(
+                    () -> new EntityNotFoundException("Dish not found")
+            );
+
+            OrderDish orderDish = new OrderDish();
+            orderDish.setDish(dish);
+            orderDish.setQuantity(dishDTO.getQuantity());
+            orderDish.setOrder(order);
+            orderDish.setMetadata(new Metadata());
+
+            return orderDish;
+        }).toList();
+    }
 }

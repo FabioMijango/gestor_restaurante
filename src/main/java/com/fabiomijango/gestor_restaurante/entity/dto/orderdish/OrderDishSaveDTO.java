@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.Getter;
 
+@Deprecated
+@SuppressWarnings("Not used")
 @Data
 public class OrderDishSaveDTO {
     @NotEmpty

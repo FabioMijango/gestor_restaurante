@@ -1,6 +1,7 @@
 package com.fabiomijango.gestor_restaurante.controller;
 
 import com.fabiomijango.gestor_restaurante.entity.Tables;
+import com.fabiomijango.gestor_restaurante.entity.dto.tables.TableGetDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.tables.TableSaveDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.tables.TableUpdateDTO;
 import com.fabiomijango.gestor_restaurante.service.iTableService;
@@ -66,9 +67,9 @@ public class TableController implements iGenericCRUDController<TableSaveDTO, Tab
     public ResponseEntity<GenericResponse> findById(@ValidUUID @PathVariable String id) {
 
         UUID uuid = UUID.fromString(id);
-        Tables table = tableService.findById(uuid).orElseThrow(
+        TableGetDTO table = tableService.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("Table not found")
-        );
+        ).mapToDTO();
 
         return GenericResponse.builder()
                 .status(HttpStatus.OK)
@@ -81,7 +82,9 @@ public class TableController implements iGenericCRUDController<TableSaveDTO, Tab
     @GetMapping
     public ResponseEntity<GenericResponse> findAll() {
 
-        List<Tables> tables = tableService.findAll();
+        List<TableGetDTO> tables = tableService.findAll()
+                .stream().map(Tables::mapToDTO)
+                .toList();
         String msg = tables.isEmpty() ? "No tables found" : "List of all tables";
 
         return GenericResponse.builder()

@@ -1,6 +1,7 @@
 package com.fabiomijango.gestor_restaurante.controller;
 
 import com.fabiomijango.gestor_restaurante.entity.Order;
+import com.fabiomijango.gestor_restaurante.entity.dto.order.OrderGetDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.order.OrderSaveDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.order.OrderUpdateDTO;
 import com.fabiomijango.gestor_restaurante.exception.EntityException.EntityNotValidException;
@@ -70,9 +71,9 @@ public class OrderController implements iGenericCRUDController<OrderSaveDTO, Ord
     @GetMapping(PATH_ID)
     public ResponseEntity<GenericResponse> findById(@ValidUUID @PathVariable String id) {
         UUID uuid = UUID.fromString(id);
-        Order order = orderService.findById(uuid).orElseThrow(
+        OrderGetDTO order = orderService.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("Order not found")
-        );
+        ).mapToGetDTO();
         return GenericResponse.builder()
                 .status(HttpStatus.OK)
                 .data(order)
@@ -83,7 +84,9 @@ public class OrderController implements iGenericCRUDController<OrderSaveDTO, Ord
     @Override
     @GetMapping
     public ResponseEntity<GenericResponse> findAll() {
-        List<Order> orders = orderService.findAll();
+        List<OrderGetDTO> orders = orderService.findAll()
+                .stream().map(Order::mapToGetDTO)
+                .toList();
         String msg = orders.isEmpty() ? "No orders found" : "Orders retrieved successfully";
         return GenericResponse.builder()
                 .status(HttpStatus.OK)

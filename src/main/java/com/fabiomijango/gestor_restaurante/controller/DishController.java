@@ -1,6 +1,7 @@
 package com.fabiomijango.gestor_restaurante.controller;
 
 import com.fabiomijango.gestor_restaurante.entity.Dish;
+import com.fabiomijango.gestor_restaurante.entity.dto.dish.DishGetDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.dish.DishSaveDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.dish.DishUpdateDTO;
 import com.fabiomijango.gestor_restaurante.exception.EntityException.EntityNotValidException;
@@ -74,9 +75,9 @@ public class DishController implements iGenericCRUDController<DishSaveDTO, DishU
     public ResponseEntity<GenericResponse> findById(@ValidUUID @PathVariable String id) {
 
         UUID uuid = UUID.fromString(id);
-        Dish dish = dishService.findById(uuid).orElseThrow(
+        DishGetDTO dish = dishService.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("Dish not found")
-        );
+        ).mapToDTO();
         return GenericResponse.builder()
                 .status(HttpStatus.OK)
                 .message("Dish retrieved successfully")
@@ -87,7 +88,9 @@ public class DishController implements iGenericCRUDController<DishSaveDTO, DishU
     @Override
     @GetMapping
     public ResponseEntity<GenericResponse> findAll() {
-        List<Dish> dishes = dishService.findAll();
+        List<DishGetDTO> dishes = dishService.findAll()
+                .stream().map(Dish::mapToDTO)
+                .toList();
         String msg = dishes.isEmpty() ? "No dishes found" : "Dishes retrieved successfully";
         return GenericResponse.builder()
                 .status(HttpStatus.OK)

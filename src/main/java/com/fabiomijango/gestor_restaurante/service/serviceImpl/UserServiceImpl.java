@@ -62,7 +62,7 @@ public class UserServiceImpl implements iUserService {
             throw new EntityExistsException("Email already used");
         }
         String role = String.valueOf(entity.getRoleName());
-        UserRoles userRole = userRolesRepository.findByRole(role).orElseThrow(
+        UserRoles userRole = userRolesRepository.findByRoleIgnoreCase(role).orElseThrow(
                 () -> new EntityNotFoundException("Role not found")
         );
 

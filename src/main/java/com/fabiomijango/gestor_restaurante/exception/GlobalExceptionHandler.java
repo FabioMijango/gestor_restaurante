@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
 
         return GenericResponse.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .message("Validation error 2")
+                .message("Validation error")
                 .data(errorResponse)
                 .build().buildResponse();
     }
@@ -65,11 +65,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<GenericResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception, HttpServletRequest request) {
 
+        String msgError = "";
+        if(exception.getMostSpecificCause().getMessage().contains("Required request body is missing")){
+            msgError = "Request body is missing";
+        }else {
+            msgError = exception.getMostSpecificCause().getMessage().split("\n")[0];
+        }
         ErrorResponse errorResponse = buildErrorResponse(request);
         errorResponse.setErrors(
                 Map.of(
                         "cause",
-                        exception.getMostSpecificCause().getMessage().split("\n")[0]
+                        msgError
                 )
         );
 

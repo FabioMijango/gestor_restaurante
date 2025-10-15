@@ -3,7 +3,6 @@ package com.fabiomijango.gestor_restaurante.entity.dto.orderdish;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import lombok.Getter;
 
 @Deprecated
 @SuppressWarnings("Not used")

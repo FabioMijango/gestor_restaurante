@@ -4,8 +4,6 @@ import com.fabiomijango.gestor_restaurante.entity.data.Metadata;
 import com.fabiomijango.gestor_restaurante.entity.data.OrderState;
 import com.fabiomijango.gestor_restaurante.entity.dto.order.OrderGetDTO;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Digits;
 import lombok.Data;
 
 import java.util.List;

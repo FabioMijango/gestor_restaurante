@@ -26,4 +26,6 @@ public final class Constants {
 
     // User paths
     public static final String USER_CONTROLLER = "/users";
+    public static final String AUTH_PATH = "/auth";
+    public static final String LOGIN_PATH = "/login";
 }

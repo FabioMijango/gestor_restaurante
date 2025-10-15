@@ -11,4 +11,6 @@ public interface iOrderDishService extends iGenericCRUDService<OrderDish, UUID, 
     void deleteAllOrderDishesByOrderId(UUID orderId);
 
     List<OrderDish> findAllByOrderId(UUID orderId);
+
+    void save(List<OrderDish> entity);
 }

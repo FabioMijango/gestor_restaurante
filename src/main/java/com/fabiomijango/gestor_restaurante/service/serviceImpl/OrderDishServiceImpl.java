@@ -28,6 +28,11 @@ public class OrderDishServiceImpl implements iOrderDishService {
         return orderDishRepository.findAllByOrder_Id(orderId);
     }
 
+    @Override
+    public void save(List<OrderDish> entity) {
+        orderDishRepository.saveAll(entity);
+    }
+
 
     @Override
     public void save(OrderDishSaveDTO entity) {

@@ -41,20 +41,6 @@ public class OrderServiceImpl implements iOrderService {
     private iUserService userService;
 
 
-// FIXME: Verificar si es necesario estas funciones aqui
-
-//    @Override
-//    public void deleteAllOrderDishesByOrderId(UUID orderId) {
-//        if(!orderRepository.existsById(orderId)) {
-//            throw new IllegalArgumentException("Order with ID " + orderId + " does not exist."); //TODO: Crear excepcion
-//        }
-//    }
-//
-//    @Override
-//    public List<OrderDish> findAllOrderDishesByOrderId(UUID orderId) {
-//        return orderRepository.
-//    }
-
     @Override
     public List<OrderState> findAllOrderStates() {
         return orderStateRepository.findAll();

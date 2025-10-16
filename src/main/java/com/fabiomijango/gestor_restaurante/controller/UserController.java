@@ -1,15 +1,19 @@
 package com.fabiomijango.gestor_restaurante.controller;
 
 import com.fabiomijango.gestor_restaurante.entity.User;
+import com.fabiomijango.gestor_restaurante.entity.dto.user.UserLoginDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.user.UserSaveDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.user.UserUpdateDTO;
 import com.fabiomijango.gestor_restaurante.service.iUserService;
 import com.fabiomijango.gestor_restaurante.util.GenericResponse;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +27,29 @@ public class UserController implements iGenericCRUDController<UserSaveDTO, UserU
 
     @Autowired
     private iUserService userService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @PostMapping(LOGIN_PATH)
+    public ResponseEntity<GenericResponse> login(@Valid @RequestBody UserLoginDTO entity){
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        entity.getUsername(),
+                        entity.getPassword()
+                )
+        );
+
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
+
+
+
+        return GenericResponse.builder()
+                .status(HttpStatus.OK)
+                .data(user)
+                .message("User logged in successfully")
+                .build().buildResponse();
+    }
 
     @Override
     @PostMapping

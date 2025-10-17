@@ -2,9 +2,11 @@ package com.fabiomijango.gestor_restaurante.configuration;
 
 import com.fabiomijango.gestor_restaurante.security.filter.JwtAuthenticationFilter;
 import com.fabiomijango.gestor_restaurante.security.filter.JwtValidationFilter;
+import com.fabiomijango.gestor_restaurante.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,7 +45,11 @@ public class SecurityConfig {
 
         return http
                 .authorizeHttpRequests( auth -> auth
-                        .requestMatchers(API_BASE_PATH + USER_CONTROLLER + LOGIN_PATH).permitAll()
+                        .requestMatchers(HttpMethod.POST, API_BASE_PATH + USER_CONTROLLER + LOGIN_PATH).permitAll()
+                        .requestMatchers(API_BASE_PATH + USER_CONTROLLER + WILDCARD_PATH).hasAnyRole(Roles.ADMIN.name())
+                        .requestMatchers(API_BASE_PATH + DISH_CONTROLLER + WILDCARD_PATH).hasAnyRole(Roles.ADMIN.name(), Roles.CHEF.name())
+                        .requestMatchers(API_BASE_PATH + TABLE_CONTROLLER + WILDCARD_PATH).hasAnyRole(Roles.ADMIN.name(), Roles.WAITER.name())
+                        .requestMatchers(API_BASE_PATH + ORDER_CONTROLLER + WILDCARD_PATH).authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilter(jwtAuth)

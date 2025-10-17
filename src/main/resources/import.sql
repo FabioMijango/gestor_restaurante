@@ -34,3 +34,11 @@ INSERT INTO user_roles
 VALUES (1, 'ADMIN'),
        (2, 'WAITER'),
        (3, 'CHEF');
+
+-- DATA EXAMPLE, NOT FOR PRODUCTION
+INSERT INTO users (id, email, hash_password, username, role_id) VALUES
+    ('00000000-0000-4000-8000-000000000000',
+     'admin@test.com',
+     '$2a$10$WhKqxOfHCO8gYJ78VZq5RelDMYLtmXt1p4EbS2FuIS27sL3WFeZqS',
+     'test',
+     1);

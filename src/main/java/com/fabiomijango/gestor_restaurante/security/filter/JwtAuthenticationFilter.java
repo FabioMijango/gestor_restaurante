@@ -1,28 +1,24 @@
 package com.fabiomijango.gestor_restaurante.security.filter;
 
-import com.fabiomijango.gestor_restaurante.entity.User;
 import com.fabiomijango.gestor_restaurante.entity.dto.user.UserLoginDTO;
+import com.fabiomijango.gestor_restaurante.util.GenericResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.lang.Assert;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.fabiomijango.gestor_restaurante.security.JwtConfig.*;
@@ -82,14 +78,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .compact();
 
         response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
-        Map<String, String> body = new HashMap<>();
-        body.put("token", token);
-        body.put("username", username);
-        body.put("message", "Authentication successful");
 
-        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+        GenericResponse genericResponse = GenericResponse.builder()
+                .data(Map.of("token", token))
+                .message("User logged in successfully")
+                .build();
+
+        response.getWriter().write(new ObjectMapper().writeValueAsString(genericResponse));
         response.setContentType(CONTENT_TYPE);
-        response.setStatus(200);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
 
@@ -99,12 +96,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                               AuthenticationException failed)
             throws IOException {
 
-        Map<String, String> body = new HashMap<>();
-        body.put("message", "Error en la autenticacion username o password incorrectos!");
-        body.put("error", failed.getMessage());
+        GenericResponse genericResponse = GenericResponse.builder()
+                .data(Map.of("error", failed.getMessage()))
+                .message("Error en la autenticacion: username o password incorrectos!")
+                .build();
 
-        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
-        response.setStatus(401);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(genericResponse));
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(CONTENT_TYPE);
     }
 }

@@ -11,15 +11,23 @@ import com.fabiomijango.gestor_restaurante.service.iUserService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
-public class UserServiceImpl implements iUserService {
+public class UserServiceImpl implements iUserService, UserDetailsService {
 
     @Autowired
     private iUserRepository userRepository;
@@ -99,4 +107,22 @@ public class UserServiceImpl implements iUserService {
     }
 
 
+    @Transactional(readOnly = true)
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new EntityNotFoundException("User not found")
+        );
+
+        List<GrantedAuthority> grantedAuthorities = List.of(
+                new SimpleGrantedAuthority(user.getRole().getRole())
+        );
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getHashPassword(),
+                grantedAuthorities
+        );
+    }
 }

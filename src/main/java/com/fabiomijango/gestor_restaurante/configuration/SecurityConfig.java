@@ -1,7 +1,12 @@
 package com.fabiomijango.gestor_restaurante.configuration;
 
+import com.fabiomijango.gestor_restaurante.security.filter.JwtAuthenticationFilter;
+import com.fabiomijango.gestor_restaurante.security.filter.JwtValidationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,8 +18,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import static com.fabiomijango.gestor_restaurante.util.Constants.*;
+
 @Configuration
 public class SecurityConfig {
+
+    @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -22,10 +32,22 @@ public class SecurityConfig {
     }
 
     @Bean
+    AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests( auth ->
-                        auth.anyRequest().permitAll() // FIXME: Cambiar
+        JwtAuthenticationFilter jwtAuth = new JwtAuthenticationFilter(authenticationManager());
+        jwtAuth.setFilterProcessesUrl(API_BASE_PATH + USER_CONTROLLER + LOGIN_PATH);
+
+        return http
+                .authorizeHttpRequests( auth -> auth
+                        .requestMatchers(API_BASE_PATH + USER_CONTROLLER + LOGIN_PATH).permitAll()
+                        .anyRequest().authenticated()
                 )
+                .addFilter(jwtAuth)
+                .addFilter(new JwtValidationFilter(authenticationManager()))
                 .csrf( config -> config.disable())
                 .cors( cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement( management ->

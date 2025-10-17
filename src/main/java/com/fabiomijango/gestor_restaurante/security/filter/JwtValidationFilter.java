@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.fabiomijango.gestor_restaurante.security.JwtConfig.*;
 
@@ -48,11 +49,12 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
 
             String username = claims.getSubject();
 
-            Object authoritiesClaims = claims.get("authorities");
+            List<?> authoritiesClaims = (List<?>) claims.get("authorities");
 
-            Collection<? extends GrantedAuthority> authorities = List.of(
-                    new SimpleGrantedAuthority(authoritiesClaims.toString())
-            );
+            Collection<? extends GrantedAuthority> authorities = authoritiesClaims.stream()
+                    .map(Object::toString)
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(username, null, authorities);

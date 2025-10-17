@@ -88,8 +88,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String username = user.getUsername();
         List<String> roles = user.getAuthorities()
-                .stream().map(GrantedAuthority::getAuthority)
-                .toList();
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+            .map(auth -> auth.startsWith("ROLE_") ? auth : "ROLE_" + auth)
+            .toList();
 
         Claims claims = Jwts.claims()
                 .add("authorities", roles)

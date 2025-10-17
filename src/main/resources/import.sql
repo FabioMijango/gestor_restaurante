@@ -31,6 +31,6 @@ VALUES (1, 'Pending'),
 -- User Roles
 
 INSERT INTO user_roles
-VALUES (1, 'Admin'),
-       (2, 'Waiter'),
-       (3, 'Chef');
+VALUES (1, 'ADMIN'),
+       (2, 'WAITER'),
+       (3, 'CHEF');

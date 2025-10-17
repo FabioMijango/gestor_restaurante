@@ -124,7 +124,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         GenericResponse genericResponse = GenericResponse.builder()
                 .data(Map.of("error", failed.getMessage()))
-                .message("Error en la autenticacion: username o password incorrectos!")
+                .message("Login data is invalid")
                 .build();
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(genericResponse));

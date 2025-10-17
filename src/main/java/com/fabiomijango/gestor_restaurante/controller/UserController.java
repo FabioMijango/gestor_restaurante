@@ -31,26 +31,6 @@ public class UserController implements iGenericCRUDController<UserSaveDTO, UserU
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping(LOGIN_PATH)
-    public ResponseEntity<GenericResponse> login(@Valid @RequestBody UserLoginDTO entity){
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        entity.getUsername(),
-                        entity.getPassword()
-                )
-        );
-
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
-
-
-
-        return GenericResponse.builder()
-                .status(HttpStatus.OK)
-                .data(user)
-                .message("User logged in successfully")
-                .build().buildResponse();
-    }
-
     @Override
     @PostMapping
     public ResponseEntity<GenericResponse> save(@RequestBody UserSaveDTO entity) {

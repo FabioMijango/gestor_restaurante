@@ -61,11 +61,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                          Authentication authResult)
             throws IOException {
 
-        org.springframework.security.core.userdetails.User user =
-                (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
+        User user =
+                (User) authResult.getPrincipal();
 
         String username = user.getUsername();
-        Collection<? extends GrantedAuthority> roles = user.getAuthorities();
+        List<String> roles = user.getAuthorities()
+                .stream().map(GrantedAuthority::getAuthority)
+                .toList();
+
         Claims claims = Jwts.claims()
                 .add("authorities", roles)
                 .add("username", username)
@@ -73,7 +76,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = Jwts.builder()
                 .subject(username)
                 .claims(claims)
-                .expiration(new Date(System.currentTimeMillis() + 3600000))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 8))
                 .issuedAt(new Date())
                 .signWith(SECRET_KEY)
                 .compact();

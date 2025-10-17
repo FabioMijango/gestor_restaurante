@@ -5,9 +5,12 @@ import com.fabiomijango.gestor_restaurante.util.GenericResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,23 +34,46 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.authenticationManager = authenticationManager;
     }
 
+    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) {
-        UserLoginDTO user = null;
         try {
-            user = new ObjectMapper().readValue(request.getInputStream(), UserLoginDTO.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            UserLoginDTO user = new ObjectMapper().readValue(request.getInputStream(), UserLoginDTO.class);
+            if(user.getUsername() == null || user.getPassword() == null){
+                throw new IllegalArgumentException("Username and password must be provided");
+            }
 
-        assert user != null;
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                    user.getUsername(),
-                    user.getPassword()
-                );
-        return authenticationManager.authenticate(authenticationToken);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(
+                            user.getUsername(),
+                            user.getPassword()
+                    );
+            return authenticationManager.authenticate(authenticationToken);
+        } catch (Exception e) {
+            String msg;
+            if(e.getMessage().contains("User not found")){
+                msg = "Bad credentials";
+            }else{
+                msg = e.getMessage().split("\n")[0];
+            }
+
+            GenericResponse.ErrorResponse errorResponse = GenericResponse.ErrorResponse.builder()
+                    .path(request.getRequestURI())
+                    .method(request.getMethod())
+                    .errors(
+                            Map.of("error", msg)
+                    ).build();
+            GenericResponse genericResponse = GenericResponse.builder()
+                    .data(errorResponse)
+                    .message("Login data is invalid")
+                    .build();
+
+            response.getWriter().write(new ObjectMapper().writeValueAsString(genericResponse));
+            response.setContentType(CONTENT_TYPE);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
     }
 
     @Override

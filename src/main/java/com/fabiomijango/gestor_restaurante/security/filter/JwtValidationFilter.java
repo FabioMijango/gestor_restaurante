@@ -1,8 +1,8 @@
 package com.fabiomijango.gestor_restaurante.security.filter;
 
+import com.fabiomijango.gestor_restaurante.util.GenericResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,9 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.fabiomijango.gestor_restaurante.security.JwtConfig.*;
@@ -51,12 +50,8 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
 
             Object authoritiesClaims = claims.get("authorities");
 
-            Collection<? extends GrantedAuthority> authorities = Arrays.asList(
-                    new ObjectMapper()
-                            .addMixIn(SimpleGrantedAuthority.class,
-                                    SimpleGrantedAuthorityJsonCreator.class)
-                            .readValue(authoritiesClaims.toString().getBytes(),
-                                    SimpleGrantedAuthority[].class)
+            Collection<? extends GrantedAuthority> authorities = List.of(
+                    new SimpleGrantedAuthority(authoritiesClaims.toString())
             );
 
             UsernamePasswordAuthenticationToken authenticationToken =
@@ -64,13 +59,37 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             chain.doFilter(request, response);
-        } catch (JwtException e){
-            Map<String, String> body = new HashMap<>();
-            body.put("error", e.getMessage());
-            body.put("message", "El token JWT es invalido");
+        } catch (Exception e){
 
-            response.getWriter().write(new ObjectMapper().writeValueAsString(body));
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            String msgError;
+            if(e.getMessage().contains("Malformed protected header JSON")){
+                msgError = "Malformed token, please provide a valid token";
+            }else if (e.getMessage().contains("JWT signature does not match")){
+                msgError = "Invalid token";
+            } else if (e.getMessage().contains("JWT expired")) {
+                msgError = "Token has expired";
+            } else {
+                msgError = e.getMessage();
+            }
+
+            GenericResponse.ErrorResponse errorResponse = GenericResponse.ErrorResponse.builder()
+                    .path(request.getServletPath())
+                    .method(request.getMethod())
+                    .errors(
+                            Map.of(
+                                    "error", msgError
+                            )
+                    )
+                    .build();
+
+            GenericResponse genericResponse = GenericResponse.builder()
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .data(errorResponse)
+                    .message("Unauthorized")
+                    .build();
+
+            response.getWriter().write(new ObjectMapper().writeValueAsString(genericResponse));
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType(CONTENT_TYPE);
         }
     }

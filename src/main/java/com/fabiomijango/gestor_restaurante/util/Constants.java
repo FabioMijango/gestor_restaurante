@@ -7,6 +7,7 @@ public final class Constants {
 
     // Base path
     public static final String API_BASE_PATH = "/api/v1";
+    public static final String WILDCARD_PATH = "/**";
 
     // Common path variables
     public static final String PATH_ID = "/{id}";
@@ -28,4 +29,10 @@ public final class Constants {
     public static final String USER_CONTROLLER = "/users";
     public static final String AUTH_PATH = "/auth";
     public static final String LOGIN_PATH = "/login";
+
+    public enum Roles {
+        ADMIN,
+        CHEF,
+        WAITER
+    }
 }

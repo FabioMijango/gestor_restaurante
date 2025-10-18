@@ -106,6 +106,8 @@ public class OrderServiceImpl implements iOrderService {
             order.setState(orderState);
         }
         if(entity.getDishes() != null) {
+            orderDishService.deleteAllOrderDishesByOrderId(orderId);
+
             List<OrderDish> newDishes = mapToOrderDishes(entity.getDishes(), order, userName);
             orderDishService.save(newDishes);
         }

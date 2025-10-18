@@ -1,17 +1,28 @@
 -- Dishes
 
-INSERT INTO dishes (id, description, is_available, name, price, category_id)
+INSERT INTO dishes (id, description, is_available, created_at, created_by, updated_at, updated_by, name, price, category_id)
 VALUES
-('30f60d00-5f20-4642-8ff0-a0946f9f3f3c', 'Classic Margherita pizza with fresh tomatoes, mozzarella cheese, and basil.', true, 'Margherita Pizza', 8.99, 1),
-('6985f40e-81e0-4f13-93ba-e1879b634929', 'Pepperoni pizza topped with spicy pepperoni slices and mozzarella cheese.', true, 'Pepperoni Pizza', 9.99, 1),
-('a3d7930d-7fcd-480e-a029-3aaa4fed278b', 'Caesar salad with romaine lettuce, croutons, Parmesan cheese, and Caesar dressing.', true, 'Caesar Salad', 6.49, 5),
-('ed42e57e-63e7-487f-9350-f074f46902d8', 'Grilled chicken sandwich with lettuce, tomato, and mayo on a toasted bun.', true, 'Grilled Chicken Sandwich', 7.99, 7),
-('f5958ddb-e471-4e23-a849-f16dc2a96c67', 'Spaghetti Bolognese with rich meat sauce and Parmesan cheese.', true, 'Spaghetti Bolognese', 10.49, 4),
-('54415b6b-c2d0-44cd-902c-a1b3ff6b6037', 'Chocolate lava cake with a molten chocolate center served with vanilla ice cream.', true, 'Chocolate Lava Cake', 5.99, 3),
-('d998742d-a57f-44a0-b164-d46ffa19954c', 'Fresh garden salad with mixed greens, cherry tomatoes, cucumbers, and vinaigrette.', true, 'Garden Salad', 5.49, 5),
-('63bbd3ad-6950-428b-9027-3d2ec7fdf04a', 'BBQ ribs glazed with tangy barbecue sauce served with coleslaw.', true, 'BBQ Ribs', 12.99, 7),
-('e0f243d9-cbce-4b32-afdd-19eff6067575', 'Vegetarian wrap with hummus, grilled vegetables, and fresh greens.', true, 'Vegetarian Wrap', 7.49, 4),
-('10c89430-73cf-4a5b-9b3a-e5568dd26280', 'Classic cheeseburger with lettuce, tomato, pickles, and cheddar cheese.', true, 'Cheeseburger', 8.49, 1);
+('cfeb706d-b7a1-4ba6-b6aa-a0909ffcb303','Fresh Atlantic salmon grilled to perfection with aromatic herbs and lemon',True,now(),'test',now(),'test','Grilled Salmon with Herbs','18.99','1'),
+('0f685bac-952d-4dbe-a22b-a5473506530b','100% natural orange juice freshly squeezed daily',True,now(),'test',now(),'test','Fresh Squeezed Orange Juice','4.5','2'),
+('df7ba63f-0423-40a0-8bc3-60069a483edf','Decadent layered chocolate cake with rich ganache frosting',True,now(),'test',now(),'test','Triple Chocolate Cake','7.99','3'),
+('c28046d8-bb00-4945-8ae9-1ef8b606a172','Lightly breaded and fried calamari served with marinara sauce',True,now(),'test',now(),'test','Crispy Calamari Rings','9.25','4'),
+('ef2eb2ad-dd3a-4919-aba0-7d206a4c2668','Mixed greens with tomatoes, cucumbers, olives and feta cheese',True,now(),'test',now(),'test','Mediterranean Garden Salad','8.75','5'),
+('58199e77-4843-464f-a117-3eed7ed33eaf','Homemade soup with fresh broccoli and sharp cheddar cheese',True,now(),'test',now(),'test','Creamy Broccoli Cheddar Soup','5.5','6'),
+('409d8865-792d-4c26-af9d-a80db04733c5','Crispy french fries tossed with truffle oil and parmesan',True,now(),'test',now(),'test','Truffle Parmesan Fries','6.25','7'),
+('1b83488b-2d59-4bb6-9fb1-e0923801e7e5','Pan-seared beef medallions with red wine reduction',True,now(),'test',now(),'test','Beef Tenderloin Medallions','26.5','1'),
+('c69fe714-2a10-4896-a20d-05183c7ad79b','Refreshing blend of fresh mango, pineapple and coconut milk',True,now(),'test',now(),'test','Tropical Mango Smoothie','5.99','2'),
+('e5765a1f-4752-44c3-9bc3-d25465e6fb63','Italian dessert with espresso-soaked ladyfingers and mascarpone cream',True,now(),'test',now(),'test','Classic Tiramisu','8.5','3'),
+('692ea314-6576-4e99-9edc-563a827bb2c5','Warm creamy dip with spinach and artichokes, served with tortilla chips',True,now(),'test',now(),'test','Spinach Artichoke Dip','8.99','4'),
+('d2f639c9-4aa6-4f52-8e30-8857654a72ec','Grilled chicken over mixed greens with sesame ginger dressing',True,now(),'test',now(),'test','Asian Sesame Chicken Salad','11.5','5'),
+('fa0f600f-1b02-4bca-993d-6d39d852b3bd','Caramelized onions in rich beef broth topped with melted gruyere',True,now(),'test',now(),'test','French Onion Soup','6.75','6'),
+('e4f469df-bf1f-4d35-ba42-c91d9fd4650d','Seasonal vegetables roasted with garlic and olive oil',True,now(),'test',now(),'test','Roasted Garlic Vegetables','5.75','7'),
+('e16925c4-c6fc-40cb-ba72-c42d09f3e660','Tender chicken breast in creamy marsala wine mushroom sauce',True,now(),'test',now(),'test','Chicken Marsala','17.25','1'),
+('f292765d-c182-407b-9fb9-e2db7e90d274','Homemade lemonade infused with fresh strawberries',True,now(),'test',now(),'test','Strawberry Lemonade','4.25','2'),
+('a6192ede-f6b4-48c2-ba66-f7e4feffd0dd','Creamy classic cheesecake with graham cracker crust',True,now(),'test',now(),'test','New York Cheesecake','7.5','3'),
+('ab3c72a9-13a4-4296-b623-27182cb7a095','Crispy wings tossed in tangy barbecue sauce',True,now(),'test',now(),'test','BBQ Chicken Wings','10.99','4'),
+('0f6b6ae9-9648-4b3e-aa67-b6850ef2e059','Crisp romaine lettuce with parmesan, croutons and caesar dressing',True,now(),'test',now(),'test','Caesar Salad','8.25','5'),
+('12146e11-f8c8-4c0c-b128-5e24bcbd7361','Velvety smooth soup with roasted butternut squash and hint of nutmeg',True,now(),'test',now(),'test','Butternut Squash Soup','5.99','6'),
+('a0c003f1-3782-4022-b7b6-7fa956da070e','Creamy homemade macaroni and cheese with three cheese blend',True,now(),'test',now(),'test','Mac and Cheese','6.5','7');
 
 
 -- Tables

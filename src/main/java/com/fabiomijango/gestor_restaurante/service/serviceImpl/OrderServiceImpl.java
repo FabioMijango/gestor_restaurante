@@ -138,6 +138,9 @@ public class OrderServiceImpl implements iOrderService {
             Dish dish = dishService.getDishById(uuid).orElseThrow(
                     () -> new EntityNotFoundException("Dish not found")
             );
+            if(!dish.getIsAvailable()){
+                throw new EntityNotValidException("Dish " + dish.getName() + " is not available");
+            }
 
             OrderDish orderDish = new OrderDish();
             orderDish.setDish(dish);

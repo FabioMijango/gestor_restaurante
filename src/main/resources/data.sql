@@ -16,15 +16,15 @@ VALUES
 
 -- Tables
 
-INSERT INTO tables (id, table_number, state_id)
+INSERT INTO tables (id, created_at, created_by, updated_at, updated_by, table_number, state_id)
 VALUES
-('f89a0a24-8c83-45d5-97f6-9a2b3377fb50', 1, 1),
-('b366b1c4-2c3d-4191-bca8-2021c9a1ef18', 2, 2),
-('4e5a04b1-064c-4fdf-9d40-4e64f81e9e09', 3, 1),
-('18224af9-b33a-4c4f-8551-dc50fd6adc9f', 4, 3),
-('3396c9d6-e654-4612-aec6-c5ba47eea833', 5, 4),
-('ad36ba30-2d78-4aa8-81cd-fea660615803', 6, 2),
-('97878e2e-1ca0-432b-8753-566cebac898f', 7, 1),
-('9ea6504d-ed50-4e5b-826e-1b30d3a45532', 8, 3),
-('34d9c894-c6f3-491b-9bd2-0ac79436cb98', 9, 1),
-('8383fa2d-399a-4e83-b616-9ba692a5eed8', 10, 5);
+('f89a0a24-8c83-45d5-97f6-9a2b3377fb50', now(), 'test', now(), 'test',1, 1),
+('b366b1c4-2c3d-4191-bca8-2021c9a1ef18', now(), 'test', now(), 'test',2, 2),
+('4e5a04b1-064c-4fdf-9d40-4e64f81e9e09', now(), 'test', now(), 'test',3, 1),
+('18224af9-b33a-4c4f-8551-dc50fd6adc9f', now(), 'test', now(), 'test',4, 3),
+('3396c9d6-e654-4612-aec6-c5ba47eea833', now(), 'test', now(), 'test',5, 4),
+('ad36ba30-2d78-4aa8-81cd-fea660615803', now(), 'test', now(), 'test',6, 2),
+('97878e2e-1ca0-432b-8753-566cebac898f', now(), 'test', now(), 'test',7, 1),
+('9ea6504d-ed50-4e5b-826e-1b30d3a45532', now(), 'test', now(), 'test',8, 3),
+('34d9c894-c6f3-491b-9bd2-0ac79436cb98', now(), 'test', now(), 'test',9, 1),
+('8383fa2d-399a-4e83-b616-9ba692a5eed8', now(), 'test', now(), 'test',10, 5);

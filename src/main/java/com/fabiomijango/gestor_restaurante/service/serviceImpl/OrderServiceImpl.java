@@ -110,6 +110,11 @@ public class OrderServiceImpl implements iOrderService {
 
             List<OrderDish> newDishes = mapToOrderDishes(entity.getDishes(), order, userName);
             orderDishService.save(newDishes);
+
+            double totalPrice = newDishes.stream()
+                    .mapToDouble(od -> od.getDish().getPrice() * od.getQuantity())
+                    .sum();
+            order.setTotalPrice(totalPrice);
         }
 
         Metadata md = order.getMetadata();

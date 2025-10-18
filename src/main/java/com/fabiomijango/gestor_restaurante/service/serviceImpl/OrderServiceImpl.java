@@ -54,8 +54,8 @@ public class OrderServiceImpl implements iOrderService {
         Tables table = tableService.findById(tableId).orElseThrow(
                 () -> new EntityNotFoundException("Table not found")
         );
-        if (table.getState().getState().equals("Occupied")) {
-            throw new EntityNotValidException("Table is already occupied");
+        if (!table.getState().getState().equals("Available")) {
+            throw new EntityNotValidException("Table is not available");
         }
 
         tableService.update(

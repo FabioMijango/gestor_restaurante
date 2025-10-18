@@ -1,10 +1,6 @@
 package com.fabiomijango.gestor_restaurante.entity.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Transient;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -18,9 +14,13 @@ public class Metadata {
     private String createdBy;
     private String updatedBy;
 
-    public Metadata() {
+    public Metadata(String createdBy) {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.createdBy = createdBy;
+    }
+
+    public Metadata() {
     }
 
     public void updateMetadata(String user) {

@@ -38,7 +38,7 @@ public class TableServiceImpl implements iTableService {
     }
 
     @Override
-    public void save(TableSaveDTO entity) {
+    public void save(TableSaveDTO entity, String userName) {
 
         if(tableRepository.existsByTableNumber(entity.getTableNumber())){
             throw new EntityExistsException("Table with that number already exists");
@@ -51,15 +51,13 @@ public class TableServiceImpl implements iTableService {
         Tables newTable = new Tables();
         newTable.setTableNumber(entity.getTableNumber());
         newTable.setState(defaultState);
-
-        Metadata md = new Metadata();
-        newTable.setMetadata(md);
+        newTable.setMetadata(new Metadata(userName));
 
         tableRepository.save(newTable);
     }
 
     @Override
-    public void update(TableUpdateDTO entity) {
+    public void update(TableUpdateDTO entity, String userName) {
         UUID id = UUID.fromString(entity.getId());
 
         Tables table = tableRepository.findById(id).orElseThrow(
@@ -71,7 +69,7 @@ public class TableServiceImpl implements iTableService {
         table.setState(newState);
 
         Metadata md = table.getMetadata();
-        md.updateMetadata(""); // TODO: Pass username
+        md.updateMetadata(userName);
         table.setMetadata(md);
 
         tableRepository.save(table);

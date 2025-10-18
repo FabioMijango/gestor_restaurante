@@ -49,7 +49,7 @@ public class OrderServiceImpl implements iOrderService {
 
     @Override
     @Transactional
-    public void save(OrderSaveDTO entity) {
+    public void save(OrderSaveDTO entity, String userName) {
         UUID tableId = UUID.fromString(entity.getTableId());
         Tables table = tableService.findById(tableId).orElseThrow(
                 () -> new EntityNotFoundException("Table not found")
@@ -62,7 +62,8 @@ public class OrderServiceImpl implements iOrderService {
                 TableUpdateDTO.builder()
                     .id(entity.getTableId())
                     .newState("Occupied")
-                    .build()
+                    .build(),
+                userName
                 );
 
         User waiter = userService.findByEmail(entity.getWaiterEmail()).orElseThrow(
@@ -79,21 +80,21 @@ public class OrderServiceImpl implements iOrderService {
         order.setWaiter(waiter);
         order.setState(orderState);
         order.setOrderDishes(
-                mapToOrderDishes(entity.getDishes(), order)
+                mapToOrderDishes(entity.getDishes(), order, userName)
         );
 
         for(OrderDish orderDish : order.getOrderDishes()) {
             totalPrice += orderDish.getDish().getPrice() * orderDish.getQuantity();
         }
         order.setTotalPrice(totalPrice);
-        order.setMetadata(new Metadata());
+        order.setMetadata(new Metadata(userName));
 
         orderRepository.save(order);
     }
 
     @Override
     @Transactional
-    public void update(OrderUpdateDTO entity) {
+    public void update(OrderUpdateDTO entity, String userName) {
         UUID orderId = UUID.fromString(entity.getOrderId());
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new EntityNotFoundException("Order not found")
@@ -105,12 +106,12 @@ public class OrderServiceImpl implements iOrderService {
             order.setState(orderState);
         }
         if(entity.getDishes() != null) {
-            List<OrderDish> newDishes = mapToOrderDishes(entity.getDishes(), order);
+            List<OrderDish> newDishes = mapToOrderDishes(entity.getDishes(), order, userName);
             orderDishService.save(newDishes);
         }
 
         Metadata md = order.getMetadata();
-        md.updateMetadata("system"); // TODO: Get user
+        md.updateMetadata(userName); // TODO: Get user
         order.setMetadata(md);
 
         orderRepository.save(order);
@@ -131,7 +132,7 @@ public class OrderServiceImpl implements iOrderService {
         return orderRepository.findAll();
     }
 
-    private List<OrderDish> mapToOrderDishes(List<DishDTO> dishes, Order order) {
+    private List<OrderDish> mapToOrderDishes(List<DishDTO> dishes, Order order, String userName) {
         return dishes.stream().map(dishDTO -> {
             UUID uuid = UUID.fromString(dishDTO.getDishId());
             Dish dish = dishService.getDishById(uuid).orElseThrow(
@@ -142,7 +143,7 @@ public class OrderServiceImpl implements iOrderService {
             orderDish.setDish(dish);
             orderDish.setQuantity(dishDTO.getQuantity());
             orderDish.setOrder(order);
-            orderDish.setMetadata(new Metadata());
+            orderDish.setMetadata(new Metadata(userName));
 
             return orderDish;
         }).toList();

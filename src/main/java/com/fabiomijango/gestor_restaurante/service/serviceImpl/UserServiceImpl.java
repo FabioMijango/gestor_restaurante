@@ -65,7 +65,7 @@ public class UserServiceImpl implements iUserService, UserDetailsService {
 
 
     @Override
-    public void save(UserSaveDTO entity) {
+    public void save(UserSaveDTO entity, String userName) {
         if(existsByEmail(entity.getEmail())) {
             throw new EntityExistsException("Email already used");
         }
@@ -80,13 +80,13 @@ public class UserServiceImpl implements iUserService, UserDetailsService {
         user.setHashPassword(passwordEncoder.encode(entity.getPassword()));
         user.setRole(userRole);
 
-        user.setMetadata(new Metadata());
+        user.setMetadata(new Metadata(userName));
 
         userRepository.save(user);
     }
 
     @Override
-    public void update(UserUpdateDTO entity) {
+    public void update(UserUpdateDTO entity, String userName) {
         // Vale la pena?
         throw new UnsupportedOperationException("Not implemented yet");
     }

@@ -35,13 +35,13 @@ public class OrderDishServiceImpl implements iOrderDishService {
 
 
     @Override
-    public void save(OrderDishSaveDTO entity) {
+    public void save(OrderDishSaveDTO entity, String userName) {
         // Not needed?
         throw  new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void update(OrderDishUpdateDTO entity) {
+    public void update(OrderDishUpdateDTO entity, String userName) {
         // Not needed?
         throw  new UnsupportedOperationException("Not supported yet.");
     }

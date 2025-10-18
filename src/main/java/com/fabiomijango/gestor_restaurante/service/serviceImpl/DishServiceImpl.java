@@ -37,7 +37,7 @@ public class DishServiceImpl implements iDishService {
 
 
     @Override
-    public void save(DishSaveDTO entity) {
+    public void save(DishSaveDTO entity, String userName) {
         DishCategory dishCategory = dishCategoryRepository.findByCategory(entity.getDishCategory()).orElseThrow(
                 () -> new EntityNotFoundException("Dish category not found")
         );
@@ -48,13 +48,13 @@ public class DishServiceImpl implements iDishService {
         dish.setPrice(entity.getPrice());
         dish.setCategory(dishCategory);
         dish.setIsAvailable(true);
-        dish.setMetadata(new Metadata());
+        dish.setMetadata(new Metadata(userName));
 
         dishRepository.save(dish);
     }
 
     @Override
-    public void update(DishUpdateDTO entity) {
+    public void update(DishUpdateDTO entity, String userName) {
         UUID uuid = UUID.fromString(entity.getId());
         Dish dish = dishRepository.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("Dish not found")
@@ -74,7 +74,7 @@ public class DishServiceImpl implements iDishService {
         }
 
         Metadata md = dish.getMetadata();
-        md.updateMetadata(""); // TODO: get User
+        md.updateMetadata(userName);
         dish.setMetadata(md);
 
         dishRepository.save(dish);

@@ -8,6 +8,9 @@ import com.fabiomijango.gestor_restaurante.exception.EntityException.EntityNotVa
 import com.fabiomijango.gestor_restaurante.service.iDishService;
 import com.fabiomijango.gestor_restaurante.util.GenericResponse;
 import com.fabiomijango.gestor_restaurante.validation.ValidUUID;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static com.fabiomijango.gestor_restaurante.security.JwtConfig.SECRET_KEY;
+import static com.fabiomijango.gestor_restaurante.security.JwtConfig.getSubjectFromToken;
 import static com.fabiomijango.gestor_restaurante.util.Constants.*;
 
 @RestController
@@ -31,7 +36,7 @@ public class DishController implements iGenericCRUDController<DishSaveDTO, DishU
     @Override
     @PostMapping
     public ResponseEntity<GenericResponse> save(@Valid @RequestBody DishSaveDTO entity, HttpServletRequest request) {
-        dishService.save(entity);
+        dishService.save(entity, getSubjectFromToken(request));
         return GenericResponse.builder()
                 .data(null)
                 .status(HttpStatus.CREATED)
@@ -49,7 +54,9 @@ public class DishController implements iGenericCRUDController<DishSaveDTO, DishU
             throw new EntityNotValidException("At least one field must be provided for update");
         }
 
-        dishService.update(entity);
+
+
+        dishService.update(entity, getSubjectFromToken(request));
 
         return GenericResponse.builder()
                 .message("Dish updated successfully")

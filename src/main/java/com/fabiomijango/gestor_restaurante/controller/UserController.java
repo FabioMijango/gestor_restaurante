@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static com.fabiomijango.gestor_restaurante.security.JwtConfig.getSubjectFromToken;
 import static com.fabiomijango.gestor_restaurante.util.Constants.*;
 
 @RestController
@@ -25,13 +26,10 @@ public class UserController implements iGenericCRUDController<UserSaveDTO, UserU
     @Autowired
     private iUserService userService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     @Override
-    @PostMapping
+    @PostMapping(AUTH_PATH)
     public ResponseEntity<GenericResponse> save(@RequestBody UserSaveDTO entity, HttpServletRequest request) {
-        userService.save(entity);
+        userService.save(entity, getSubjectFromToken(request));
         return GenericResponse.builder()
                 .status(HttpStatus.CREATED)
                 .data(null)

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static com.fabiomijango.gestor_restaurante.security.JwtConfig.getSubjectFromToken;
 import static com.fabiomijango.gestor_restaurante.util.Constants.*;
 
 @RestController
@@ -30,7 +31,7 @@ public class TableController implements iGenericCRUDController<TableSaveDTO, Tab
     @Override
     @PostMapping
     public ResponseEntity<GenericResponse> save(@Valid @RequestBody TableSaveDTO tableDTO, HttpServletRequest request) {
-        tableService.save(tableDTO);
+        tableService.save(tableDTO, getSubjectFromToken(request));
         return GenericResponse.builder()
                 .data(null)
                 .message("Table saved successfully")
@@ -42,7 +43,7 @@ public class TableController implements iGenericCRUDController<TableSaveDTO, Tab
     @PatchMapping
     public ResponseEntity<GenericResponse> update(@Valid @RequestBody TableUpdateDTO entity, HttpServletRequest request) {
 
-        tableService.update(entity);
+        tableService.update(entity, getSubjectFromToken(request));
         return GenericResponse.builder()
                 .message("Table updated successfully")
                 .status(HttpStatus.OK)

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static com.fabiomijango.gestor_restaurante.security.JwtConfig.getSubjectFromToken;
 import static com.fabiomijango.gestor_restaurante.util.Constants.*;
 
 @RestController
@@ -32,7 +33,7 @@ public class OrderController implements iGenericCRUDController<OrderSaveDTO, Ord
     @PostMapping
     public ResponseEntity<GenericResponse> save(@Valid @RequestBody OrderSaveDTO entity, HttpServletRequest request) {
 
-        orderService.save(entity);
+        orderService.save(entity, getSubjectFromToken(request));
         return GenericResponse.builder()
                 .data(null)
                 .status(HttpStatus.CREATED)
@@ -47,7 +48,7 @@ public class OrderController implements iGenericCRUDController<OrderSaveDTO, Ord
             throw new EntityNotValidException("At least one field must be provided for update");
         }
 
-        orderService.update(entity);
+        orderService.update(entity, getSubjectFromToken(request));
         return GenericResponse.builder()
                 .data(null)
                 .status(HttpStatus.OK)

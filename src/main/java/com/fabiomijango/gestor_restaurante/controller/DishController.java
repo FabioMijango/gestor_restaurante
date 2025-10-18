@@ -9,6 +9,7 @@ import com.fabiomijango.gestor_restaurante.service.iDishService;
 import com.fabiomijango.gestor_restaurante.util.GenericResponse;
 import com.fabiomijango.gestor_restaurante.validation.ValidUUID;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class DishController implements iGenericCRUDController<DishSaveDTO, DishU
 
     @Override
     @PostMapping
-    public ResponseEntity<GenericResponse> save(@Valid @RequestBody DishSaveDTO entity) {
+    public ResponseEntity<GenericResponse> save(@Valid @RequestBody DishSaveDTO entity, HttpServletRequest request) {
         dishService.save(entity);
         return GenericResponse.builder()
                 .data(null)
@@ -40,7 +41,7 @@ public class DishController implements iGenericCRUDController<DishSaveDTO, DishU
 
     @Override
     @PatchMapping
-    public ResponseEntity<GenericResponse> update(@Valid @RequestBody DishUpdateDTO entity) {
+    public ResponseEntity<GenericResponse> update(@Valid @RequestBody DishUpdateDTO entity, HttpServletRequest request) {
         if(entity.getName() == null &
             entity.getAvailable() == null &
             entity.getDescription() == null &

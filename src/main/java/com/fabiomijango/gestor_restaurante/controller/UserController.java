@@ -6,6 +6,7 @@ import com.fabiomijango.gestor_restaurante.entity.dto.user.UserUpdateDTO;
 import com.fabiomijango.gestor_restaurante.service.iUserService;
 import com.fabiomijango.gestor_restaurante.util.GenericResponse;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class UserController implements iGenericCRUDController<UserSaveDTO, UserU
 
     @Override
     @PostMapping
-    public ResponseEntity<GenericResponse> save(@RequestBody UserSaveDTO entity) {
+    public ResponseEntity<GenericResponse> save(@RequestBody UserSaveDTO entity, HttpServletRequest request) {
         userService.save(entity);
         return GenericResponse.builder()
                 .status(HttpStatus.CREATED)
@@ -40,7 +41,7 @@ public class UserController implements iGenericCRUDController<UserSaveDTO, UserU
 
     @Override
 //    @PatchMapping
-    public ResponseEntity<GenericResponse> update(@RequestBody UserUpdateDTO entity) {
+    public ResponseEntity<GenericResponse> update(@RequestBody UserUpdateDTO entity, HttpServletRequest request) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

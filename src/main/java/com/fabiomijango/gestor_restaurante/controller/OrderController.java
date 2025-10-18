@@ -9,6 +9,7 @@ import com.fabiomijango.gestor_restaurante.service.iOrderService;
 import com.fabiomijango.gestor_restaurante.util.GenericResponse;
 import com.fabiomijango.gestor_restaurante.validation.ValidUUID;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class OrderController implements iGenericCRUDController<OrderSaveDTO, Ord
 
     @Override
     @PostMapping
-    public ResponseEntity<GenericResponse> save(@Valid @RequestBody OrderSaveDTO entity) {
+    public ResponseEntity<GenericResponse> save(@Valid @RequestBody OrderSaveDTO entity, HttpServletRequest request) {
 
         orderService.save(entity);
         return GenericResponse.builder()
@@ -41,7 +42,7 @@ public class OrderController implements iGenericCRUDController<OrderSaveDTO, Ord
 
     @Override
     @PatchMapping
-    public ResponseEntity<GenericResponse> update(@Valid @RequestBody OrderUpdateDTO entity) {
+    public ResponseEntity<GenericResponse> update(@Valid @RequestBody OrderUpdateDTO entity, HttpServletRequest request) {
         if(entity.getDishes() == null & entity.getOrderState() == null){
             throw new EntityNotValidException("At least one field must be provided for update");
         }

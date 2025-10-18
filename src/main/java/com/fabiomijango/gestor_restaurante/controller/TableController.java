@@ -8,6 +8,7 @@ import com.fabiomijango.gestor_restaurante.service.iTableService;
 import com.fabiomijango.gestor_restaurante.util.GenericResponse;
 import com.fabiomijango.gestor_restaurante.validation.ValidUUID;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class TableController implements iGenericCRUDController<TableSaveDTO, Tab
 
     @Override
     @PostMapping
-    public ResponseEntity<GenericResponse> save(@Valid @RequestBody TableSaveDTO tableDTO) {
+    public ResponseEntity<GenericResponse> save(@Valid @RequestBody TableSaveDTO tableDTO, HttpServletRequest request) {
         tableService.save(tableDTO);
         return GenericResponse.builder()
                 .data(null)
@@ -39,7 +40,7 @@ public class TableController implements iGenericCRUDController<TableSaveDTO, Tab
 
     @Override
     @PatchMapping
-    public ResponseEntity<GenericResponse> update(@Valid @RequestBody TableUpdateDTO entity) {
+    public ResponseEntity<GenericResponse> update(@Valid @RequestBody TableUpdateDTO entity, HttpServletRequest request) {
 
         tableService.update(entity);
         return GenericResponse.builder()

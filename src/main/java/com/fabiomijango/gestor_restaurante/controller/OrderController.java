@@ -29,6 +29,17 @@ public class OrderController implements iGenericCRUDController<OrderSaveDTO, Ord
     @Autowired
     private iOrderService orderService;
 
+    @PatchMapping(CLOSE_ORDER_PATH + PATH_ID)
+    public ResponseEntity<GenericResponse> closeOrder(@ValidUUID @PathVariable String id, HttpServletRequest request) {
+        UUID uuid = UUID.fromString(id);
+        orderService.closeOrder(uuid, getSubjectFromToken(request));
+
+        return GenericResponse.builder()
+                .message("Order closed successfully")
+                .status(HttpStatus.OK)
+                .build().buildResponse();
+    }
+
     @Override
     @PostMapping
     public ResponseEntity<GenericResponse> save(@Valid @RequestBody OrderSaveDTO entity, HttpServletRequest request) {

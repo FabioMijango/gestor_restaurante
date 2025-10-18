@@ -3,6 +3,7 @@ package com.fabiomijango.gestor_restaurante.service.serviceImpl;
 import com.fabiomijango.gestor_restaurante.entity.*;
 import com.fabiomijango.gestor_restaurante.entity.data.Metadata;
 import com.fabiomijango.gestor_restaurante.entity.data.OrderState;
+import com.fabiomijango.gestor_restaurante.entity.data.TableState;
 import com.fabiomijango.gestor_restaurante.entity.dto.order.OrderSaveDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.order.OrderUpdateDTO;
 import com.fabiomijango.gestor_restaurante.entity.dto.orderdish.DishDTO;
@@ -45,6 +46,34 @@ public class OrderServiceImpl implements iOrderService {
     @Override
     public List<OrderState> findAllOrderStates() {
         return orderStateRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void closeOrder(UUID orderId, String userName) {
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new EntityNotFoundException("Order not found")
+        );
+
+        OrderState closedState = orderStateRepository.findByState("Paid").orElseThrow(
+                () -> new EntityNotFoundException("Order state 'Paid' not found")
+        );
+
+        order.setState(closedState);
+        Metadata md = order.getMetadata();
+        md.updateMetadata(userName);
+        order.setMetadata(md);
+        orderRepository.save(order);
+
+        Tables table = order.getTable();
+        TableState availableState = tableService.findTableStateByName("Available").orElseThrow(
+                () -> new EntityNotFoundException("Table state 'Available' not found")
+        );
+        TableUpdateDTO tableUpdateDTO = TableUpdateDTO.builder()
+                        .id(table.getId().toString())
+                        .newState(availableState.getState())
+                        .build();
+        tableService.update(tableUpdateDTO, userName);
     }
 
     @Override

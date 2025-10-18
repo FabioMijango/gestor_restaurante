@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface iOrderService extends iGenericCRUDService<Order, UUID, OrderSaveDTO, OrderUpdateDTO> {
 
     List<OrderState> findAllOrderStates();
+
+    void closeOrder(UUID orderId, String userName);
 }

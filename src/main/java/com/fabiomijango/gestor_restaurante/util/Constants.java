@@ -20,6 +20,7 @@ public final class Constants {
 
     // Order paths
     public static final String ORDER_CONTROLLER = "/orders";
+    public static final String CLOSE_ORDER_PATH = "/close";
 
     // DishOrder paths
     public static final String DISH_ORDER_PATH = "/dishOrder";

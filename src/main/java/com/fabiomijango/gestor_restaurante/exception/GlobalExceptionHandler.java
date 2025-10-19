@@ -86,6 +86,23 @@ public class GlobalExceptionHandler {
                 .build().buildResponse();
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<GenericResponse> handleGenericException(Exception exception, HttpServletRequest request){
+        ErrorResponse errorResponse = buildErrorResponse(request);
+        errorResponse.setErrors(
+                Map.of(
+                        "exception",
+                        exception.getMessage()
+                )
+        );
+
+        return GenericResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message("An unexpected error occurred")
+                .data(errorResponse)
+                .build().buildResponse();
+    }
+
     private ErrorResponse buildErrorResponse(HttpServletRequest request){
         return ErrorResponse.builder()
                 .path(request.getRequestURI())

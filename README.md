@@ -15,6 +15,10 @@ Este sistema ha sido desarrollado para optimizar y facilitar el control interno 
   - **Mesero (Waiter):** Registro y seguimiento de órdenes, administración de mesas asignadas.
 - **Autenticación:** Inicio de sesión seguro, acceso diferenciado según el rol.
 
+## Diagrama Entidad-Relacion
+
+![Diagrama Entidad-Relación de la base de datos](./Diagrama%20E-R.drawio.png)
+
 ## Tecnologías utilizadas
 
 - **Spring Boot**

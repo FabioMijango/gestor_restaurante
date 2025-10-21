@@ -46,6 +46,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests( auth -> auth
                         .requestMatchers(HttpMethod.POST, API_BASE_PATH + USER_CONTROLLER + LOGIN_PATH).permitAll()
+                        .requestMatchers(HttpMethod.GET, API_BASE_PATH + DISH_CONTROLLER).authenticated()
                         .requestMatchers(API_BASE_PATH + USER_CONTROLLER + WILDCARD_PATH).hasAnyRole(Roles.ADMIN.name())
                         .requestMatchers(API_BASE_PATH + DISH_CONTROLLER + WILDCARD_PATH).hasAnyRole(Roles.ADMIN.name(), Roles.CHEF.name())
                         .requestMatchers(API_BASE_PATH + TABLE_CONTROLLER + WILDCARD_PATH).hasAnyRole(Roles.ADMIN.name(), Roles.WAITER.name())
